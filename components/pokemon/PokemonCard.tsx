@@ -1,4 +1,4 @@
-import { Card, Grid, Row, Text, GridProps } from '@nextui-org/react';
+import { Card, Grid, Row, Text } from '@nextui-org/react';
 
 import { useRouter } from 'next/router';
 import { SmallPokemon } from '../../interfaces';
@@ -23,8 +23,10 @@ export const PokemonCard: React.FC<Props> = ({ pokemon: { id, img, name } }) => 
         </Card.Body>
         <Card.Footer>
           <Row justify='space-between'>
-            <p style={{textTransform: 'capitalize'}}>{name}</p>
-            <p># {id}</p>
+            {/* <p style={{textTransform: 'capitalize'}}>{name}</p>
+            <p># {id}</p> */}
+            <Text transform='capitalize'>{name}</Text>
+            <Text># {id}</Text>
           </Row>
         </Card.Footer>
       </Card>
