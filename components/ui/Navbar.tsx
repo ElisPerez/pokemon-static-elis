@@ -17,16 +17,16 @@ export const Navbar = () => {
     >
       <Image src={'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'} alt={'App Icon'} width={70} height={70} />
 
-      <Text color='white' h2>
+      <h2 style={{color: 'white',}}>
         P
-      </Text>
-      <Text color='white' h3>
+      </h2>
+      <h3 style={{color: 'white',}}>
         okémon
-      </Text>
+      </h3>
 
       <Spacer css={{flex: 1}}/>
 
-      <Text color='white'>Favorites</Text>
+      <p style={{color: 'white',}}>Favorites</p>
     </div>
   );
 };
