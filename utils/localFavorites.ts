@@ -20,6 +20,7 @@ const existInFavorites = (id: number): boolean => {
   return favorites.includes(id);
 };
 
+// This error is because an anonymous object is being exported by default. It is valid but not recommended
 export default {
   toggleFavorite,
   existInFavorites,
