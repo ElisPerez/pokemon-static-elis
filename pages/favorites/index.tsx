@@ -1,14 +1,24 @@
-import { NextPage } from 'next';
+import { useEffect, useState } from 'react';
+
 import { Layout } from '../../components/layout';
+import { NoFavorites } from '../../components/ui';
+import { localFavorites } from '../../utils';
+import { FavoritesPokemon } from '../../components/pokemon/';
 
-interface Props {
+const FavoritesPage = () => {
+  const [favoritesPokemon, setFavoritesPokemon] = useState<number[]>([]);
 
-}
+  useEffect(() => {
+    setFavoritesPokemon(localFavorites.allPokemon());
+  }, []);
 
-const FavoritesPage: NextPage<Props> = () => {
   return (
     <Layout title='Pokémon - Favorites'>
-      <h1>Favorites Page</h1>
+      {favoritesPokemon.length === 0 ? (
+        <NoFavorites />
+      ) : (
+        <FavoritesPokemon favoritesPokemon={favoritesPokemon} />
+      )}
     </Layout>
   );
 };
