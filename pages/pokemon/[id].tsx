@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { GetStaticProps, NextPage, GetStaticPaths } from 'next';
 import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
 
+import confetti from 'canvas-confetti';
+
 import { pokeApi } from '../../api';
 import { Layout } from '../../components/layout';
 import { Pokemon } from '../../interfaces';
@@ -21,6 +23,19 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
   const onToggleFavorite = () => {
     localFavorites.toggleFavorite(pokemon.id);
     setIsInFavorites(prev => !prev);
+
+    if (isInFavorites) return;
+
+    confetti({
+      zIndex: 999,
+      particleCount: 50,
+      spread: 170,
+      angle: -100,
+      origin: {
+        x: 1,
+        y: 0,
+      },
+    });
   };
 
   return (
@@ -43,7 +58,11 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
             <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
               {/* <h1 style={{textTransform: 'capitalize'}}>{pokemon.name}</h1> */}
               <Text transform='capitalize' h1 />
-              <Button color={isInFavorites ? 'error' : 'gradient'} ghost={!isInFavorites} onClick={onToggleFavorite}>
+              <Button
+                color={isInFavorites ? 'error' : 'gradient'}
+                ghost={!isInFavorites}
+                onClick={onToggleFavorite}
+              >
                 {isInFavorites ? 'Remove from Favorites' : 'Save to Favorites'}
               </Button>
             </Card.Header>
@@ -105,24 +124,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const { id } = params as { id: string };
   const { data } = await pokeApi.get<Pokemon>(`pokemon/${id}`);
-  // const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?offset=24&limit=100');
-  // console.log(`file: index.tsx | line 32 | data`, data);
-
-  // const pokemon: SmallPokemon[] = data.results.map(poke => {
-  //   const idArray = poke.url.split('/');
-  //   const id = Number(idArray[idArray.length - 2]);
-  // console.log(`file: index.tsx | line 37 | id`, id);
-
-  //   return {
-  //     ...poke,
-  //     id,
-  //     img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`,
-  //   };
-  // });
+  // console.log(`🚀 data`, data);
 
   return {
     props: {
-      pokemon: data,
+      pokemon: {
+        id: data.id,
+        name: data.name,
+        sprites: data.sprites,
+      },
     },
   };
 };
