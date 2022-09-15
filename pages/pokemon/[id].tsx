@@ -1,8 +1,12 @@
+import { useState } from 'react';
+
 import { GetStaticProps, NextPage, GetStaticPaths } from 'next';
 import { Button, Card, Container, Grid, Image, Text } from '@nextui-org/react';
+
 import { pokeApi } from '../../api';
 import { Layout } from '../../components/layout';
 import { Pokemon } from '../../interfaces';
+import { localFavorites } from '../../utils';
 // import { useRouter } from 'next/router';
 
 interface Props {
@@ -12,8 +16,15 @@ interface Props {
 const PokemonPage: NextPage<Props> = ({ pokemon }) => {
   // console.log(`🚀 pokemon`, pokemon);
 
+  const [isInFavorites, setIsInFavorites] = useState(localFavorites.existInFavorites(pokemon.id));
+
+  const onToggleFavorite = () => {
+    localFavorites.toggleFavorite(pokemon.id);
+    setIsInFavorites(prev => !prev);
+  };
+
   return (
-    <Layout title={`Pokémon - ${pokemon.name.replace(/^\w/, (c) => c.toUpperCase())}`}>
+    <Layout title={`Pokémon - ${pokemon.name.replace(/^\w/, c => c.toUpperCase())}`}>
       <Grid.Container css={{ marginTop: '5px' }} gap={2}>
         <Grid xs={12} sm={4}>
           <Card hoverable clickable css={{ padding: '30px' }}>
@@ -32,8 +43,8 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
             <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
               {/* <h1 style={{textTransform: 'capitalize'}}>{pokemon.name}</h1> */}
               <Text transform='capitalize' h1 />
-              <Button color={'gradient'} ghost>
-                Save to Favorites
+              <Button color={'gradient'} ghost={!isInFavorites} onClick={onToggleFavorite}>
+                {isInFavorites ? 'Remove of Favorites' : 'Save to Favorites'}
               </Button>
             </Card.Header>
             <Card.Body>
@@ -45,19 +56,19 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
                   src={pokemon.sprites.front_default}
                   width={100}
                 />
-              <Image
+                <Image
                   alt={pokemon.name}
                   height={100}
                   src={pokemon.sprites.back_default}
                   width={100}
                 />
-              <Image
+                <Image
                   alt={pokemon.name}
                   height={100}
                   src={pokemon.sprites.front_shiny}
                   width={100}
                 />
-              <Image
+                <Image
                   alt={pokemon.name}
                   height={100}
                   src={pokemon.sprites.back_shiny}
