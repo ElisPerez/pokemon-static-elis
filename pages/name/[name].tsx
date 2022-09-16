@@ -7,7 +7,7 @@ import confetti from 'canvas-confetti';
 
 import { pokeApi } from '../../api';
 import { Layout } from '../../components/layout';
-import { Pokemon } from '../../interfaces';
+import { Pokemon, PokemonListResponse } from '../../interfaces';
 import { localFavorites } from '../../utils';
 import { getPokemonInfo } from '../../utils/getPokemonInfo';
 // import { useRouter } from 'next/router';
@@ -16,7 +16,7 @@ interface Props {
   pokemon: Pokemon;
 }
 
-const PokemonPage: NextPage<Props> = ({ pokemon }) => {
+const PokemonByNamePage: NextPage<Props> = ({ pokemon }) => {
   // console.log(`🚀 pokemon`, pokemon);
 
   const [isInFavorites, setIsInFavorites] = useState(localFavorites.existInFavorites(pokemon.id));
@@ -106,13 +106,12 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
 // Server Side:
 // You should use getStaticPaths if you’re statically pre-rendering pages that use dynamic routes
 export const getStaticPaths: GetStaticPaths = async ctx => {
-  const pokemon100 = [...Array(100)].map((value, index) => `${index + 25}`);
-  // console.log({ pokemon100 });
-
+  const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?offset=24&limit=100');
+  const pokemonNames: string[] = data.results.map(poke => poke.name);
   return {
-    paths: pokemon100.map(value => ({
+    paths: pokemonNames.map(name => ({
       params: {
-        id: value,
+        name,
       },
     })),
     fallback: false,
@@ -121,15 +120,15 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
 
 // ctx: It's the context.
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // console.log(`file: [id].tsx | line 40 | ctx`, ctx); // Destructuring to params
+  // console.log(`ctx`, ctx); // Destructuring to params
 
-  const { id } = params as { id: string };
+  const { name } = params as { name: string };
 
   return {
     props: {
-      pokemon: await getPokemonInfo(id),
+      pokemon: await getPokemonInfo(name),
     },
   };
 };
 
-export default PokemonPage;
+export default PokemonByNamePage;

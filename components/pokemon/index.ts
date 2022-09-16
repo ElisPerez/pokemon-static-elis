@@ -1,3 +1,3 @@
-export * from './PokemonCard';
-export * from './FavoritesPokemon';
 export * from './FavoriteCardPokemon';
+export * from './FavoritesPokemon';
+export * from './PokemonCard';
