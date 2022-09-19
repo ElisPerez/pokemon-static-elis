@@ -58,7 +58,9 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
           <Card>
             <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
               {/* <h1 style={{textTransform: 'capitalize'}}>{pokemon.name}</h1> */}
-              <Text transform='capitalize' h1>{pokemon.name}</Text>
+              <Text transform='capitalize' h1>
+                {pokemon.name}
+              </Text>
               <Button
                 color={isInFavorites ? 'error' : 'gradient'}
                 ghost={!isInFavorites}
@@ -115,7 +117,8 @@ export const getStaticPaths: GetStaticPaths = async ctx => {
         id: value,
       },
     })),
-    fallback: false,
+    // fallback: false,
+    fallback: 'blocking',
   };
 };
 
@@ -125,11 +128,22 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const { id } = params as { id: string };
 
+  const pokemon = await getPokemonInfo(id);
+
+  if (!pokemon) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    }
+  }
+
   return {
     props: {
-      pokemon: await getPokemonInfo(id),
+      pokemon,
     },
-    revalidate: 86400 // 60 * 60 * 24
+    revalidate: 86400, // 60 * 60 * 24
   };
 };
 
